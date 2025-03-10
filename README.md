@@ -26,6 +26,7 @@ This code reference is supposed to give an overview about the syntax and the ele
 - [Pydantic](#pydantic)
 - [Pytest](#pytest)
 - [Singleton Patterns](#singleton-patterns)
+- [Standard Library](#standard-library)
   - [Itertools](#itertools)
   - [Functools](#functools)
   - [Unittest](#unittest)
