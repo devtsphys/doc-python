@@ -101,6 +101,238 @@ s.replace('.', '')   # Remove punctuation in a string
 s.count('e')	     # Count characters in string, Example: 1
 s.find('e')	         # Find sub string in given string, Example: 1
 ```
+
+#### Case Conversion Methods
+
+|Function      |Description                         |Syntax            |Example                     |Result         |
+|--------------|------------------------------------|------------------|----------------------------|---------------|
+|`upper()`     |Converts to uppercase               |`str.upper()`     |`"hello".upper()`           |`"HELLO"`      |
+|`lower()`     |Converts to lowercase               |`str.lower()`     |`"HELLO".lower()`           |`"hello"`      |
+|`capitalize()`|Capitalizes first letter            |`str.capitalize()`|`"hello world".capitalize()`|`"Hello world"`|
+|`title()`     |Title case (each word capitalized)  |`str.title()`     |`"hello world".title()`     |`"Hello World"`|
+|`swapcase()`  |Swaps case of all letters           |`str.swapcase()`  |`"Hello World".swapcase()`  |`"hELLO wORLD"`|
+|`casefold()`  |Aggressive lowercase for comparisons|`str.casefold()`  |`"HELLO".casefold()`        |`"hello"`      |
+
+#### Whitespace & Formatting Methods
+
+|Function  |Description                        |Syntax                         |Example                  |Result        |
+|----------|-----------------------------------|-------------------------------|-------------------------|--------------|
+|`strip()` |Removes leading/trailing whitespace|`str.strip([chars])`           |`"  hello  ".strip()`    |`"hello"`     |
+|`lstrip()`|Removes leading whitespace         |`str.lstrip([chars])`          |`"  hello  ".lstrip()`   |`"hello  "`   |
+|`rstrip()`|Removes trailing whitespace        |`str.rstrip([chars])`          |`"  hello  ".rstrip()`   |`"  hello"`   |
+|`center()`|Centers string in width            |`str.center(width, [fillchar])`|`"hello".center(10, '-')`|`"--hello---"`|
+|`ljust()` |Left-justifies string              |`str.ljust(width, [fillchar])` |`"hello".ljust(10, '-')` |`"hello-----"`|
+|`rjust()` |Right-justifies string             |`str.rjust(width, [fillchar])` |`"hello".rjust(10, '-')` |`"-----hello"`|
+|`zfill()` |Pads with zeros on left            |`str.zfill(width)`             |`"42".zfill(5)`          |`"00042"`     |
+
+#### Search & Find Methods
+
+|Function  |Description                                    |Syntax                           |Example                        |Result|
+|----------|-----------------------------------------------|---------------------------------|-------------------------------|------|
+|`find()`  |Returns index of first occurrence              |`str.find(sub, [start], [end])`  |`"hello world".find("world")`  |`6`   |
+|`rfind()` |Returns index of last occurrence               |`str.rfind(sub, [start], [end])` |`"hello hello".rfind("hello")` |`6`   |
+|`index()` |Like find() but raises ValueError if not found |`str.index(sub, [start], [end])` |`"hello world".index("world")` |`6`   |
+|`rindex()`|Like rfind() but raises ValueError if not found|`str.rindex(sub, [start], [end])`|`"hello hello".rindex("hello")`|`6`   |
+|`count()` |Counts occurrences of substring                |`str.count(sub, [start], [end])` |`"hello hello".count("hello")` |`2`   |
+
+#### Boolean Check Methods
+
+|Function        |Description                                |Syntax                                  |Example                            |Result|
+|----------------|-------------------------------------------|----------------------------------------|-----------------------------------|------|
+|`startswith()`  |Checks if string starts with prefix        |`str.startswith(prefix, [start], [end])`|`"hello world".startswith("hello")`|`True`|
+|`endswith()`    |Checks if string ends with suffix          |`str.endswith(suffix, [start], [end])`  |`"hello world".endswith("world")`  |`True`|
+|`isalpha()`     |Checks if all characters are letters       |`str.isalpha()`                         |`"hello".isalpha()`                |`True`|
+|`isdigit()`     |Checks if all characters are digits        |`str.isdigit()`                         |`"123".isdigit()`                  |`True`|
+|`isalnum()`     |Checks if all characters are alphanumeric  |`str.isalnum()`                         |`"hello123".isalnum()`             |`True`|
+|`isspace()`     |Checks if all characters are whitespace    |`str.isspace()`                         |`"   ".isspace()`                  |`True`|
+|`islower()`     |Checks if all characters are lowercase     |`str.islower()`                         |`"hello".islower()`                |`True`|
+|`isupper()`     |Checks if all characters are uppercase     |`str.isupper()`                         |`"HELLO".isupper()`                |`True`|
+|`istitle()`     |Checks if string is title case             |`str.istitle()`                         |`"Hello World".istitle()`          |`True`|
+|`isdecimal()`   |Checks if all characters are decimal       |`str.isdecimal()`                       |`"123".isdecimal()`                |`True`|
+|`isnumeric()`   |Checks if all characters are numeric       |`str.isnumeric()`                       |`"123".isnumeric()`                |`True`|
+|`isidentifier()`|Checks if string is valid Python identifier|`str.isidentifier()`                    |`"my_var".isidentifier()`          |`True`|
+|`isprintable()` |Checks if all characters are printable     |`str.isprintable()`                     |`"hello world".isprintable()`      |`True`|
+
+#### Split & Join Methods
+
+|Function      |Description                            |Syntax                         |Example                      |Result              |
+|--------------|---------------------------------------|-------------------------------|-----------------------------|--------------------|
+|`split()`     |Splits string into list                |`str.split([sep], [maxsplit])` |`"a,b,c".split(",")`         |`['a', 'b', 'c']`   |
+|`rsplit()`    |Splits from right                      |`str.rsplit([sep], [maxsplit])`|`"a.b.c".rsplit(".", 1)`     |`['a.b', 'c']`      |
+|`splitlines()`|Splits on line breaks                  |`str.splitlines([keepends])`   |`"line1\nline2".splitlines()`|`['line1', 'line2']`|
+|`partition()` |Splits into 3 parts at first separator |`str.partition(sep)`           |`"a-b-c".partition("-")`     |`('a', '-', 'b-c')` |
+|`rpartition()`|Splits into 3 parts at last separator  |`str.rpartition(sep)`          |`"a-b-c".rpartition("-")`    |`('a-b', '-', 'c')` |
+|`join()`      |Joins iterable with string as separator|`str.join(iterable)`           |`"-".join(['a', 'b', 'c'])`  |`"a-b-c"`           |
+
+#### Replace & Translate Methods
+
+|Function     |Description                       |Syntax                          |Example                                       |Result           |
+|-------------|----------------------------------|--------------------------------|----------------------------------------------|-----------------|
+|`replace()`  |Replaces occurrences of substring |`str.replace(old, new, [count])`|`"hello world".replace("world", "python")`    |`"hello python"` |
+|`translate()`|Translates using translation table|`str.translate(table)`          |`"hello".translate(str.maketrans("el", "xy"))`|`"hyxxo"`        |
+|`maketrans()`|Creates translation table         |`str.maketrans(x, [y], [z])`    |`str.maketrans("aeiou", "12345")`             |Translation table|
+
+#### Encoding & Decoding Methods
+
+|Function      |Description              |Syntax                            |Example                       |Result            |
+|--------------|-------------------------|----------------------------------|------------------------------|------------------|
+|`encode()`    |Encodes string to bytes  |`str.encode([encoding], [errors])`|`"hello".encode('utf-8')`     |`b'hello'`        |
+|`expandtabs()`|Replaces tabs with spaces|`str.expandtabs([tabsize])`       |`"hello\tworld".expandtabs(4)`|`"hello    world"`|
+
+#### Format Methods
+
+|Function      |Description                  |Syntax                       |Example                                       |Result         |
+|--------------|-----------------------------|-----------------------------|----------------------------------------------|---------------|
+|`format()`    |Formats string with arguments|`str.format(*args, **kwargs)`|`"Hello {}".format("world")`                  |`"Hello world"`|
+|`format_map()`|Formats using mapping        |`str.format_map(mapping)`    |`"Hello {name}".format_map({'name': 'world'})`|`"Hello world"`|
+
+#### Common String Techniques & Patterns
+
+#### 1. String Slicing
+
+```python
+text = "Hello World"
+text[0:5]      # "Hello"
+text[-5:]      # "World"
+text[::-1]     # "dlroW olleH" (reverse)
+text[::2]      # "HloWrd" (every 2nd char)
+```
+
+#### 2. Multiple Replacements
+
+```python
+text = "Hello World"
+# Method 1: Chain replacements
+result = text.replace("Hello", "Hi").replace("World", "Python")
+
+# Method 2: Using translate
+trans = str.maketrans("Helo", "Jxlp")
+result = text.translate(trans)
+
+# Method 3: Using format/f-strings
+template = "{greeting} {subject}"
+result = template.format(greeting="Hi", subject="Python")
+```
+
+#### 3. Case-Insensitive Operations
+
+```python
+text = "Hello World"
+# Case-insensitive search
+if "hello" in text.lower():
+    print("Found!")
+
+# Case-insensitive comparison
+if text.lower() == "hello world":
+    print("Match!")
+```
+
+#### 4. String Validation Patterns
+
+```python
+def validate_email(email):
+    return "@" in email and "." in email.split("@")[1]
+
+def is_valid_identifier(name):
+    return name.isidentifier() and not name.iskeyword()
+```
+
+#### 5. Advanced Split Techniques
+
+```python
+text = "apple,banana;orange:grape"
+# Split by multiple delimiters
+import re
+fruits = re.split('[,;:]', text)
+
+# Split and keep delimiter
+def split_keep_delimiter(text, delimiter):
+    parts = text.split(delimiter)
+    result = []
+    for i, part in enumerate(parts[:-1]):
+        result.extend([part, delimiter])
+    result.append(parts[-1])
+    return result
+```
+
+#### 6. String Padding & Alignment
+
+```python
+# Numeric padding
+num = "42"
+padded = num.zfill(5)  # "00042"
+
+# Custom padding
+text = "hello"
+centered = f"{text:^10}"     # "  hello   "
+left_aligned = f"{text:<10}" # "hello     "
+right_aligned = f"{text:>10}" # "     hello"
+```
+
+#### 7. Working with Multiline Strings
+
+```python
+multiline = """Line 1
+Line 2
+Line 3"""
+
+# Process each line
+lines = multiline.splitlines()
+processed = [line.strip().upper() for line in lines if line.strip()]
+
+# Join back
+result = '\n'.join(processed)
+```
+
+#### 8. String Interpolation Methods
+
+```python
+name = "World"
+age = 25
+
+# f-strings (Python 3.6+)
+result = f"Hello {name}, you are {age} years old"
+
+# format method
+result = "Hello {}, you are {} years old".format(name, age)
+result = "Hello {name}, you are {age} years old".format(name=name, age=age)
+
+# % formatting (older style)
+result = "Hello %s, you are %d years old" % (name, age)
+```
+
+#### 9. String Cleaning Utilities
+
+```python
+def clean_text(text):
+    # Remove extra whitespace
+    text = ' '.join(text.split())
+    # Remove special characters (keep alphanumeric and spaces)
+    text = ''.join(c for c in text if c.isalnum() or c.isspace())
+    return text.strip()
+
+def normalize_whitespace(text):
+    return ' '.join(text.split())
+```
+
+#### 10. Performance Tips
+
+```python
+# Efficient string concatenation
+# Bad: result = ""
+# for item in items:
+#     result += item
+
+# Good: Use join for multiple concatenations
+result = ''.join(items)
+
+# Good: Use list comprehension with join
+result = ''.join([process(item) for item in items])
+
+# For few concatenations, f-strings are fine
+result = f"{prefix}{middle}{suffix}"
+```
+
 ### Binary Types
 ### Sequence Types
 #### List
