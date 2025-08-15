@@ -640,15 +640,572 @@ writelines(seq)    # writes sequence to a file
 with open(file_name, 'w') as file_stream:
     file_stream.write(my_data)
 ```
+
+
 ## Functions
-The basic syntax is given by
-```Python
-def func(par):
-    """
-    Documentation of the function
-    """
-    return 0
+
+### 1. Basic Method Syntax
+
+### Function Definition
+
+```python
+def function_name(parameters):
+    """Optional docstring"""
+    # Function body
+    return value  # Optional
 ```
+
+### Method Definition (Inside Classes)
+
+```python
+class ClassName:
+    def method_name(self, parameters):
+        """Optional docstring"""
+        # Method body
+        return value  # Optional
+```
+
+### 2. Method Types in Classes
+
+### Instance Methods
+
+```python
+class MyClass:
+    def instance_method(self, param):
+        """Operates on instance data"""
+        self.attribute = param
+        return self.attribute
+```
+
+### Class Methods
+
+```python
+class MyClass:
+    class_var = 0
+    
+    @classmethod
+    def class_method(cls, param):
+        """Operates on class data"""
+        cls.class_var = param
+        return cls.class_var
+```
+
+### Static Methods
+
+```python
+class MyClass:
+    @staticmethod
+    def static_method(param):
+        """Independent utility function"""
+        return param * 2
+```
+
+### Property Methods
+
+```python
+class MyClass:
+    def __init__(self):
+        self._value = 0
+    
+    @property
+    def value(self):
+        """Getter"""
+        return self._value
+    
+    @value.setter
+    def value(self, val):
+        """Setter"""
+        self._value = val
+    
+    @value.deleter
+    def value(self):
+        """Deleter"""
+        del self._value
+```
+
+### 3. Parameter Types and Arguments
+
+### Positional Arguments
+
+```python
+def greet(name, age):
+    return f"Hello {name}, you are {age} years old"
+
+# Usage
+greet("Alice", 25)
+```
+
+### Default Arguments
+
+```python
+def greet(name, age=18, city="Unknown"):
+    return f"{name}, {age}, from {city}"
+
+# Usage
+greet("Bob")                    # Uses defaults
+greet("Carol", 30)              # age=30, city="Unknown"
+greet("Dave", city="NYC")       # age=18, city="NYC"
+```
+
+### Variable-Length Arguments (*args)
+
+```python
+def sum_all(*args):
+    """Accepts any number of positional arguments"""
+    return sum(args)
+
+# Usage
+sum_all(1, 2, 3, 4)      # Returns 10
+sum_all()                # Returns 0
+```
+
+### Keyword Arguments (**kwargs)
+
+```python
+def process_data(**kwargs):
+    """Accepts any number of keyword arguments"""
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+# Usage
+process_data(name="Alice", age=25, city="NYC")
+```
+
+### Combined Arguments
+
+```python
+def complex_function(required, default="default", *args, **kwargs):
+    print(f"Required: {required}")
+    print(f"Default: {default}")
+    print(f"Args: {args}")
+    print(f"Kwargs: {kwargs}")
+
+# Usage
+complex_function("req", "custom", 1, 2, 3, key1="val1", key2="val2")
+```
+
+### Keyword-Only Arguments
+
+```python
+def function_with_kwonly(a, b, *, c, d="default"):
+    """c must be passed as keyword argument"""
+    return a + b + c
+
+# Usage
+function_with_kwonly(1, 2, c=3)        # Valid
+# function_with_kwonly(1, 2, 3)        # Error!
+```
+
+### Positional-Only Arguments (Python 3.8+)
+
+```python
+def function_with_posonly(a, b, /, c, d):
+    """a and b must be positional-only"""
+    return a + b + c + d
+
+# Usage
+function_with_posonly(1, 2, 3, 4)      # Valid
+function_with_posonly(1, 2, c=3, d=4)  # Valid
+# function_with_posonly(a=1, b=2, c=3, d=4)  # Error!
+```
+
+### 4. Special Methods (Dunder Methods)
+
+### Object Lifecycle
+
+```python
+class Example:
+    def __init__(self, value):
+        """Constructor"""
+        self.value = value
+    
+    def __del__(self):
+        """Destructor"""
+        print("Object deleted")
+    
+    def __new__(cls, *args, **kwargs):
+        """Object creation"""
+        return super().__new__(cls)
+```
+
+### String Representation
+
+```python
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def __str__(self):
+        """Human-readable string"""
+        return f"{self.name} ({self.age})"
+    
+    def __repr__(self):
+        """Developer-friendly representation"""
+        return f"Person('{self.name}', {self.age})"
+```
+
+### Arithmetic Operations
+
+```python
+class Number:
+    def __init__(self, value):
+        self.value = value
+    
+    def __add__(self, other):
+        return Number(self.value + other.value)
+    
+    def __sub__(self, other):
+        return Number(self.value - other.value)
+    
+    def __mul__(self, other):
+        return Number(self.value * other.value)
+```
+
+### Comparison Operations
+
+```python
+class Student:
+    def __init__(self, name, grade):
+        self.name = name
+        self.grade = grade
+    
+    def __eq__(self, other):
+        return self.grade == other.grade
+    
+    def __lt__(self, other):
+        return self.grade < other.grade
+    
+    def __le__(self, other):
+        return self.grade <= other.grade
+```
+
+### 5. Reference Tables
+
+### Common Special Methods
+
+|Method                       |Purpose                 |Example Usage           |
+|-----------------------------|------------------------|------------------------|
+|`__init__(self, ...)`        |Constructor             |`obj = MyClass()`       |
+|`__str__(self)`              |String representation   |`str(obj)`, `print(obj)`|
+|`__repr__(self)`             |Developer representation|`repr(obj)`             |
+|`__len__(self)`              |Length                  |`len(obj)`              |
+|`__getitem__(self, key)`     |Item access             |`obj[key]`              |
+|`__setitem__(self, key, val)`|Item assignment         |`obj[key] = val`        |
+|`__contains__(self, item)`   |Membership test         |`item in obj`           |
+|`__call__(self, ...)`        |Make callable           |`obj()`                 |
+|`__iter__(self)`             |Make iterable           |`for x in obj:`         |
+|`__next__(self)`             |Iterator protocol       |`next(obj)`             |
+
+### Arithmetic Special Methods
+
+|Method                     |Operation     |Example       |
+|---------------------------|--------------|--------------|
+|`__add__(self, other)`     |Addition      |`obj + other` |
+|`__sub__(self, other)`     |Subtraction   |`obj - other` |
+|`__mul__(self, other)`     |Multiplication|`obj * other` |
+|`__truediv__(self, other)` |Division      |`obj / other` |
+|`__floordiv__(self, other)`|Floor division|`obj // other`|
+|`__mod__(self, other)`     |Modulo        |`obj % other` |
+|`__pow__(self, other)`     |Power         |`obj ** other`|
+
+### Comparison Special Methods
+
+|Method               |Operation       |Example       |
+|---------------------|----------------|--------------|
+|`__eq__(self, other)`|Equal           |`obj == other`|
+|`__ne__(self, other)`|Not equal       |`obj != other`|
+|`__lt__(self, other)`|Less than       |`obj < other` |
+|`__le__(self, other)`|Less or equal   |`obj <= other`|
+|`__gt__(self, other)`|Greater than    |`obj > other` |
+|`__ge__(self, other)`|Greater or equal|`obj >= other`|
+
+### 6. Advanced Techniques
+
+### Decorators
+
+```python
+def timing_decorator(func):
+    """Decorator to time function execution"""
+    import time
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.4f} seconds")
+        return result
+    return wrapper
+
+class MyClass:
+    @timing_decorator
+    def slow_method(self):
+        import time
+        time.sleep(1)
+        return "Done"
+```
+
+### Method Chaining
+
+```python
+class FluentBuilder:
+    def __init__(self):
+        self.data = {}
+    
+    def set_name(self, name):
+        self.data['name'] = name
+        return self  # Enable chaining
+    
+    def set_age(self, age):
+        self.data['age'] = age
+        return self
+    
+    def build(self):
+        return self.data
+
+# Usage
+result = FluentBuilder().set_name("Alice").set_age(25).build()
+```
+
+### Context Managers
+
+```python
+class FileManager:
+    def __init__(self, filename, mode):
+        self.filename = filename
+        self.mode = mode
+        self.file = None
+    
+    def __enter__(self):
+        self.file = open(self.filename, self.mode)
+        return self.file
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.file:
+            self.file.close()
+
+# Usage
+with FileManager("test.txt", "w") as f:
+    f.write("Hello, World!")
+```
+
+### Abstract Methods
+
+```python
+from abc import ABC, abstractmethod
+
+class Animal(ABC):
+    @abstractmethod
+    def make_sound(self):
+        pass
+    
+    @abstractmethod
+    def move(self):
+        pass
+
+class Dog(Animal):
+    def make_sound(self):
+        return "Woof!"
+    
+    def move(self):
+        return "Running"
+```
+
+### Cached Properties
+
+```python
+class ExpensiveComputation:
+    def __init__(self, data):
+        self.data = data
+        self._result = None
+    
+    @property
+    def result(self):
+        if self._result is None:
+            print("Computing expensive result...")
+            self._result = sum(x**2 for x in self.data)
+        return self._result
+```
+
+### 7. Best Practices
+
+### Documentation
+
+```python
+class Calculator:
+    """A simple calculator class.
+    
+    This class provides basic arithmetic operations
+    and maintains a history of calculations.
+    """
+    
+    def add(self, a: float, b: float) -> float:
+        """Add two numbers.
+        
+        Args:
+            a (float): First number
+            b (float): Second number
+            
+        Returns:
+            float: Sum of a and b
+            
+        Example:
+            >>> calc = Calculator()
+            >>> calc.add(2, 3)
+            5.0
+        """
+        return a + b
+```
+
+### Type Hints
+
+```python
+from typing import List, Dict, Optional, Union
+
+class DataProcessor:
+    def process_list(self, data: List[int]) -> List[int]:
+        """Process a list of integers"""
+        return [x * 2 for x in data]
+    
+    def get_config(self) -> Dict[str, Union[str, int]]:
+        """Return configuration dictionary"""
+        return {"name": "processor", "version": 1}
+    
+    def find_item(self, items: List[str], target: str) -> Optional[str]:
+        """Find item in list, return None if not found"""
+        return target if target in items else None
+```
+
+### Error Handling
+
+```python
+class SafeCalculator:
+    def divide(self, a: float, b: float) -> float:
+        """Safely divide two numbers"""
+        try:
+            if b == 0:
+                raise ValueError("Cannot divide by zero")
+            return a / b
+        except TypeError:
+            raise TypeError("Arguments must be numbers")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            raise
+```
+
+### 8. Common Patterns
+
+### Singleton Pattern
+
+```python
+class Singleton:
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+```
+
+### Factory Pattern
+
+```python
+class ShapeFactory:
+    @staticmethod
+    def create_shape(shape_type: str, **kwargs):
+        """Factory method to create shapes"""
+        if shape_type == "circle":
+            return Circle(kwargs.get("radius", 1))
+        elif shape_type == "rectangle":
+            return Rectangle(kwargs.get("width", 1), kwargs.get("height", 1))
+        else:
+            raise ValueError(f"Unknown shape type: {shape_type}")
+```
+
+### Observer Pattern
+
+```python
+class Subject:
+    def __init__(self):
+        self._observers = []
+    
+    def attach(self, observer):
+        """Add an observer"""
+        self._observers.append(observer)
+    
+    def detach(self, observer):
+        """Remove an observer"""
+        self._observers.remove(observer)
+    
+    def notify(self, message):
+        """Notify all observers"""
+        for observer in self._observers:
+            observer.update(message)
+```
+
+### 9. Quick Examples
+
+#### Complete Class Example
+
+```python
+class BankAccount:
+    """A simple bank account class demonstrating various method types"""
+    
+    # Class variable
+    interest_rate = 0.02
+    
+    def __init__(self, account_number: str, initial_balance: float = 0):
+        """Initialize account"""
+        self.account_number = account_number
+        self._balance = initial_balance
+        self.transactions = []
+    
+    @property
+    def balance(self) -> float:
+        """Get current balance"""
+        return self._balance
+    
+    def deposit(self, amount: float) -> None:
+        """Deposit money"""
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+        self._balance += amount
+        self.transactions.append(f"Deposit: +${amount}")
+    
+    def withdraw(self, amount: float) -> None:
+        """Withdraw money"""
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+        if amount > self._balance:
+            raise ValueError("Insufficient funds")
+        self._balance -= amount
+        self.transactions.append(f"Withdrawal: -${amount}")
+    
+    @classmethod
+    def create_savings_account(cls, account_number: str, initial_deposit: float):
+        """Factory method for savings accounts"""
+        account = cls(account_number, initial_deposit)
+        account.account_type = "Savings"
+        return account
+    
+    @staticmethod
+    def calculate_interest(principal: float, rate: float, time: float) -> float:
+        """Calculate simple interest"""
+        return principal * rate * time
+    
+    def __str__(self) -> str:
+        return f"Account {self.account_number}: ${self._balance:.2f}"
+    
+    def __repr__(self) -> str:
+        return f"BankAccount('{self.account_number}', {self._balance})"
+
+# Usage example
+account = BankAccount("ACC001", 1000)
+account.deposit(500)
+account.withdraw(200)
+print(account)  # Account ACC001: $1300.00
+```
+
+
 ## Classes
 The basic syntax is given by
 
