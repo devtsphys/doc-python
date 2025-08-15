@@ -21,6 +21,7 @@ This code reference is supposed to give an overview about the syntax and the ele
 - [Generators](#generators)
 - [Exceptions](#exceptions)
 - [Python typing](#python-typing)
+- [Python dataclasses](#python-dataclasses)
 - [Python packages](#python-packages)
 - [Python virtual environments](#virtual-environments)
 - [Pydantic](#pydantic)
@@ -1708,11 +1709,11 @@ set_mode('execute')  # Type error
 ```
 
 
-## Python Dataclasses
+## Python dataclasses
 
 ### Basic Syntax
 
-### Simple Dataclass
+###Simple Dataclass
 
 ```python
 from dataclasses import dataclass
