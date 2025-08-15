@@ -1708,6 +1708,590 @@ set_mode('execute')  # Type error
 ```
 
 
+## Python Dataclasses
+
+### Basic Syntax
+
+### Simple Dataclass
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Person:
+    name: str
+    age: int
+    email: str = "not provided"
+
+# Usage
+person = Person("Alice", 30)
+print(person)  # Person(name='Alice', age=30, email='not provided')
+```
+
+### With Methods
+
+```python
+@dataclass
+class Rectangle:
+    width: float
+    height: float
+    
+    def area(self) -> float:
+        return self.width * self.height
+    
+    def perimeter(self) -> float:
+        return 2 * (self.width + self.height)
+```
+
+-----
+
+### Decorator Parameters
+
+|Parameter     |Default|Description                                                       |Example                        |
+|--------------|-------|------------------------------------------------------------------|-------------------------------|
+|`init`        |`True` |Generate `__init__` method                                        |`@dataclass(init=False)`       |
+|`repr`        |`True` |Generate `__repr__` method                                        |`@dataclass(repr=False)`       |
+|`eq`          |`True` |Generate `__eq__` method                                          |`@dataclass(eq=False)`         |
+|`order`       |`False`|Generate ordering methods (`__lt__`, `__le__`, `__gt__`, `__ge__`)|`@dataclass(order=True)`       |
+|`unsafe_hash` |`False`|Force generation of `__hash__`                                    |`@dataclass(unsafe_hash=True)` |
+|`frozen`      |`False`|Make instances immutable                                          |`@dataclass(frozen=True)`      |
+|`match_args`  |`True` |Generate `__match_args__` for pattern matching                    |`@dataclass(match_args=False)` |
+|`kw_only`     |`False`|All fields are keyword-only                                       |`@dataclass(kw_only=True)`     |
+|`slots`       |`False`|Generate `__slots__`                                              |`@dataclass(slots=True)`       |
+|`weakref_slot`|`False`|Add weak reference slot                                           |`@dataclass(weakref_slot=True)`|
+
+### Examples
+
+```python
+# Immutable dataclass with ordering
+@dataclass(frozen=True, order=True)
+class Point:
+    x: float
+    y: float
+
+p1 = Point(1, 2)
+p2 = Point(3, 4)
+print(p1 < p2)  # True (compares tuple of fields)
+
+# Keyword-only fields
+@dataclass(kw_only=True)
+class Config:
+    host: str
+    port: int = 8080
+    debug: bool = False
+
+# Must use keywords
+config = Config(host="localhost", debug=True)
+
+# High-performance with slots
+@dataclass(slots=True)
+class FastPoint:
+    x: float
+    y: float
+```
+
+-----
+
+### Field Function
+
+### Basic Field Parameters
+
+|Parameter        |Description                  |Example                      |
+|-----------------|-----------------------------|-----------------------------|
+|`default`        |Default value                |`field(default=42)`          |
+|`default_factory`|Function to generate default |`field(default_factory=list)`|
+|`init`           |Include in `__init__`        |`field(init=False)`          |
+|`repr`           |Include in `__repr__`        |`field(repr=False)`          |
+|`compare`        |Include in comparison methods|`field(compare=False)`       |
+|`hash`           |Include in hash calculation  |`field(hash=False)`          |
+|`kw_only`        |Keyword-only parameter       |`field(kw_only=True)`        |
+
+### Field Examples
+
+```python
+from dataclasses import dataclass, field
+from typing import List
+import uuid
+from datetime import datetime
+
+@dataclass
+class User:
+    name: str
+    # Mutable default using factory
+    tags: List[str] = field(default_factory=list)
+    
+    # Auto-generated ID (not in init)
+    id: str = field(default_factory=lambda: str(uuid.uuid4()), init=False)
+    
+    # Timestamp (not in repr for cleaner output)
+    created_at: datetime = field(default_factory=datetime.now, repr=False)
+    
+    # Internal field (not compared)
+    _cache: dict = field(default_factory=dict, compare=False, repr=False)
+    
+    # Keyword-only field
+    admin: bool = field(default=False, kw_only=True)
+
+# Usage
+user = User("Alice", ["python", "data"], admin=True)
+```
+
+-----
+
+### Generated Methods
+
+### Automatic Method Generation
+
+|Method                                |When Generated             |Customizable               |
+|--------------------------------------|---------------------------|---------------------------|
+|`__init__`                            |`init=True` (default)      |Via `init` parameter       |
+|`__repr__`                            |`repr=True` (default)      |Via `repr` parameter       |
+|`__eq__`                              |`eq=True` (default)        |Via `eq` parameter         |
+|`__hash__`                            |Complex rules*             |Via `unsafe_hash` parameter|
+|`__lt__`, `__le__`, `__gt__`, `__ge__`|`order=True`               |Via `order` parameter      |
+|`__match_args__`                      |`match_args=True` (default)|Via `match_args` parameter |
+
+*Hash generation rules:
+
+- If `eq=False`: `__hash__` not generated
+- If `eq=True` and `frozen=True`: `__hash__` generated
+- If `eq=True` and `frozen=False`: `__hash__` set to `None`
+- If `unsafe_hash=True`: `__hash__` always generated
+
+### Custom Method Examples
+
+```python
+@dataclass
+class BankAccount:
+    account_number: str
+    balance: float = 0.0
+    
+    def __post_init__(self):
+        """Called after __init__"""
+        if self.balance < 0:
+            raise ValueError("Balance cannot be negative")
+    
+    def deposit(self, amount: float) -> None:
+        if amount <= 0:
+            raise ValueError("Deposit amount must be positive")
+        self.balance += amount
+    
+    def __str__(self) -> str:
+        """Custom string representation"""
+        return f"Account {self.account_number}: ${self.balance:.2f}"
+```
+
+-----
+
+### Type Hints & Validation
+
+### Advanced Type Annotations
+
+```python
+from dataclasses import dataclass
+from typing import Optional, List, Dict, Union, ClassVar
+from enum import Enum
+
+class Status(Enum):
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+
+@dataclass
+class Product:
+    # Class variable (not an instance field)
+    tax_rate: ClassVar[float] = 0.08
+    
+    name: str
+    price: float
+    category: Optional[str] = None
+    tags: List[str] = field(default_factory=list)
+    metadata: Dict[str, Union[str, int]] = field(default_factory=dict)
+    status: Status = Status.ACTIVE
+    
+    def __post_init__(self):
+        # Validation
+        if self.price < 0:
+            raise ValueError("Price cannot be negative")
+        if not self.name.strip():
+            raise ValueError("Name cannot be empty")
+```
+
+### Generic Dataclasses
+
+```python
+from typing import TypeVar, Generic, List
+
+T = TypeVar('T')
+
+@dataclass
+class Container(Generic[T]):
+    items: List[T] = field(default_factory=list)
+    
+    def add(self, item: T) -> None:
+        self.items.append(item)
+    
+    def get_first(self) -> Optional[T]:
+        return self.items[0] if self.items else None
+
+# Usage
+int_container = Container[int]()
+str_container = Container[str]()
+```
+
+-----
+
+### Advanced Features
+
+### Inheritance
+
+```python
+@dataclass
+class Animal:
+    name: str
+    species: str
+
+@dataclass
+class Dog(Animal):
+    breed: str
+    species: str = "Canis lupus"  # Override default
+    
+    def bark(self) -> str:
+        return f"{self.name} says woof!"
+
+# Multiple inheritance with dataclasses
+@dataclass
+class Timestamp:
+    created_at: datetime = field(default_factory=datetime.now)
+
+@dataclass
+class Pet(Animal, Timestamp):
+    owner: str
+```
+
+### Post-Init Processing
+
+```python
+@dataclass
+class Circle:
+    radius: float
+    area: float = field(init=False)
+    circumference: float = field(init=False)
+    
+    def __post_init__(self):
+        self.area = 3.14159 * self.radius ** 2
+        self.circumference = 2 * 3.14159 * self.radius
+
+# With InitVar for temporary values
+from dataclasses import InitVar
+
+@dataclass
+class DatabaseConnection:
+    host: str
+    port: int
+    username: str
+    password: InitVar[str]  # Not stored as field
+    connection: object = field(init=False)
+    
+    def __post_init__(self, password: str):
+        # Use password to create connection, but don't store it
+        self.connection = self._create_connection(self.host, self.port, 
+                                                  self.username, password)
+```
+
+### Factory Functions
+
+```python
+def create_user(name: str, email: str, **kwargs) -> 'User':
+    """Factory function for User creation with validation"""
+    if '@' not in email:
+        raise ValueError("Invalid email format")
+    return User(name=name, email=email, **kwargs)
+
+@dataclass
+class User:
+    name: str
+    email: str
+    active: bool = True
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'User':
+        """Alternative constructor"""
+        return cls(**data)
+    
+    @classmethod
+    def create_admin(cls, name: str, email: str) -> 'User':
+        """Factory method for admin users"""
+        return cls(name=name, email=email, admin=True)
+```
+
+### Serialization
+
+```python
+import json
+from dataclasses import dataclass, asdict, astuple
+
+@dataclass
+class Person:
+    name: str
+    age: int
+    email: str
+    
+    def to_dict(self) -> dict:
+        return asdict(self)
+    
+    def to_tuple(self) -> tuple:
+        return astuple(self)
+    
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Person':
+        return cls(**data)
+    
+    @classmethod
+    def from_json(cls, json_str: str) -> 'Person':
+        return cls.from_dict(json.loads(json_str))
+
+# Usage
+person = Person("Alice", 30, "alice@example.com")
+json_data = person.to_json()
+restored_person = Person.from_json(json_data)
+```
+
+-----
+
+### Utility Functions Reference
+
+|Function                          |Purpose                     |Example                  |
+|----------------------------------|----------------------------|-------------------------|
+|`asdict(instance)`                |Convert to dictionary       |`asdict(person)`         |
+|`astuple(instance)`               |Convert to tuple            |`astuple(person)`        |
+|`fields(class_or_instance)`       |Get field information       |`fields(Person)`         |
+|`is_dataclass(class_or_instance)` |Check if dataclass          |`is_dataclass(Person)`   |
+|`make_dataclass(cls_name, fields)`|Create dataclass dynamically|See example below        |
+|`replace(instance, **changes)`    |Create copy with changes    |`replace(person, age=31)`|
+
+### Dynamic Dataclass Creation
+
+```python
+from dataclasses import make_dataclass, field
+
+# Create dataclass dynamically
+Point = make_dataclass('Point', [
+    'x',
+    'y', 
+    ('z', float, field(default=0.0))
+])
+
+# Equivalent to:
+# @dataclass
+# class Point:
+#     x: Any
+#     y: Any
+#     z: float = 0.0
+```
+
+### Field Introspection
+
+```python
+from dataclasses import fields
+
+@dataclass
+class Example:
+    name: str
+    age: int = 0
+    tags: List[str] = field(default_factory=list)
+
+# Examine fields
+for f in fields(Example):
+    print(f"Field: {f.name}, Type: {f.type}, Default: {f.default}")
+    
+# Check if class is a dataclass
+print(is_dataclass(Example))  # True
+print(is_dataclass(Example()))  # True
+```
+
+-----
+
+### Best Practices
+
+### 1. Use Type Hints Consistently
+
+```python
+# Good
+@dataclass
+class Good:
+    name: str
+    count: int
+    rate: float
+
+# Avoid
+@dataclass
+class Avoid:
+    name  # No type hint
+    count: int
+    rate  # No type hint
+```
+
+### 2. Prefer `default_factory` for Mutable Defaults
+
+```python
+# Good
+@dataclass
+class Good:
+    items: List[str] = field(default_factory=list)
+    config: Dict[str, Any] = field(default_factory=dict)
+
+# Dangerous - mutable default shared between instances
+@dataclass
+class Dangerous:
+    items: List[str] = []  # DON'T DO THIS
+```
+
+### 3. Use `frozen=True` for Immutable Data
+
+```python
+@dataclass(frozen=True)
+class ImmutablePoint:
+    x: float
+    y: float
+    
+# Can be used as dictionary keys
+points = {ImmutablePoint(1, 2): "origin"}
+```
+
+### 4. Validation in `__post_init__`
+
+```python
+@dataclass
+class ValidatedUser:
+    name: str
+    age: int
+    email: str
+    
+    def __post_init__(self):
+        if self.age < 0:
+            raise ValueError("Age cannot be negative")
+        if '@' not in self.email:
+            raise ValueError("Invalid email format")
+        if not self.name.strip():
+            raise ValueError("Name cannot be empty")
+```
+
+### 5. Use Slots for Performance
+
+```python
+# For classes with many instances
+@dataclass(slots=True)
+class HighPerformance:
+    x: float
+    y: float
+    z: float
+    
+# Reduces memory usage and improves attribute access speed
+```
+
+### 6. Combine with Properties
+
+```python
+@dataclass
+class Temperature:
+    _celsius: float = field(repr=False)
+    
+    @property
+    def celsius(self) -> float:
+        return self._celsius
+    
+    @celsius.setter
+    def celsius(self, value: float) -> None:
+        if value < -273.15:
+            raise ValueError("Temperature below absolute zero")
+        self._celsius = value
+    
+    @property
+    def fahrenheit(self) -> float:
+        return self._celsius * 9/5 + 32
+    
+    @property
+    def kelvin(self) -> float:
+        return self._celsius + 273.15
+```
+
+### 7. Pattern Matching (Python 3.10+)
+
+```python
+@dataclass
+class Point:
+    x: float
+    y: float
+
+def process_point(point: Point) -> str:
+    match point:
+        case Point(0, 0):
+            return "Origin"
+        case Point(x, 0):
+            return f"On X-axis at {x}"
+        case Point(0, y):
+            return f"On Y-axis at {y}"
+        case Point(x, y) if x == y:
+            return f"On diagonal at ({x}, {y})"
+        case Point(x, y):
+            return f"Point at ({x}, {y})"
+```
+
+-----
+
+### Common Patterns & Idioms
+
+#### Builder Pattern with Dataclasses
+
+```python
+@dataclass
+class HttpRequest:
+    url: str
+    method: str = "GET"
+    headers: Dict[str, str] = field(default_factory=dict)
+    params: Dict[str, str] = field(default_factory=dict)
+    data: Optional[str] = None
+    
+    def add_header(self, key: str, value: str) -> 'HttpRequest':
+        """Fluent interface for building requests"""
+        new_headers = {**self.headers, key: value}
+        return replace(self, headers=new_headers)
+    
+    def add_param(self, key: str, value: str) -> 'HttpRequest':
+        new_params = {**self.params, key: value}
+        return replace(self, params=new_params)
+
+# Usage
+request = (HttpRequest("https://api.example.com")
+           .add_header("Authorization", "Bearer token")
+           .add_param("limit", "10"))
+```
+
+#### Configuration Classes
+
+```python
+@dataclass(frozen=True)
+class DatabaseConfig:
+    host: str = "localhost"
+    port: int = 5432
+    database: str = "myapp"
+    username: str = "user"
+    password: str = field(repr=False, default="")  # Don't print password
+    
+    @property
+    def connection_string(self) -> str:
+        return f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
+
+@dataclass(frozen=True)
+class AppConfig:
+    database: DatabaseConfig = field(default_factory=DatabaseConfig)
+    debug: bool = False
+    log_level: str = "INFO"
+```
+
 
 ## Python Packages
 We can import python files as modules which is beneficial in terms of software development efforts including multiple source files structured within directories. We start with the following structure of code
