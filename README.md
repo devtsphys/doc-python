@@ -1713,7 +1713,7 @@ set_mode('execute')  # Type error
 
 ### Basic Syntax
 
-###Simple Dataclass
+#### Simple Dataclass
 
 ```python
 from dataclasses import dataclass
