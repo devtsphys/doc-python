@@ -23,6 +23,7 @@ This code reference is supposed to give an overview about the syntax and the ele
 - [Python typing](#python-typing)
 - [Python dataclasses](#python-dataclasses)
 - [Python packages](#python-packages)
+- [Python paths](#python-paths)
 - [Python virtual environments](#virtual-environments)
 - [Pydantic](#pydantic)
 - [Pytest](#pytest)
@@ -2883,6 +2884,406 @@ Then, within the main.py file we can simply import the module as follows
 from utils import readwrite
 ```
 
+
+## Python paths
+
+
+### Quick Overview
+
+Python provides two main approaches for file path handling:
+- **`pathlib`** (Python 3.4+) - Modern, object-oriented approach (recommended)
+- **`os.path`** - Traditional module, still widely used
+
+---
+
+### 1. pathlib Module (Recommended)
+
+### Basic Path Creation
+
+```python
+from pathlib import Path
+
+# Create paths
+p = Path('folder/file.txt')
+p = Path('/absolute/path/file.txt')
+p = Path.home()  # User home directory
+p = Path.cwd()   # Current working directory
+p = Path('.')    # Current directory
+p = Path('..')   # Parent directory
+
+# Platform-specific paths
+p = Path('C:/Windows/System32')  # Windows
+p = Path('/usr/local/bin')       # Unix/Linux
+```
+
+### Path Components and Properties
+
+```python
+p = Path('/home/user/documents/file.txt')
+
+# Path components
+p.parts           # ('/', 'home', 'user', 'documents', 'file.txt')
+p.parent          # Path('/home/user/documents')
+p.parents         # Generator of parent directories
+p.name           # 'file.txt'
+p.stem           # 'file'
+p.suffix         # '.txt'
+p.suffixes       # ['.txt'] (list of all suffixes)
+p.anchor         # '/' (root of the filesystem)
+p.root           # '/' (root part)
+
+# Multiple suffixes example
+p2 = Path('archive.tar.gz')
+p2.suffixes      # ['.tar', '.gz']
+p2.suffix        # '.gz' (last suffix)
+```
+
+### Path Operations
+
+```python
+# Joining paths
+p = Path('home') / 'user' / 'documents'
+p = Path('home').joinpath('user', 'documents')
+
+# Resolving paths
+p.resolve()           # Absolute path, resolves symlinks
+p.expanduser()        # Expands ~ to user home
+p.absolute()          # Absolute path (may contain symlinks)
+
+# Path manipulation
+p.with_name('newfile.txt')     # Change filename
+p.with_suffix('.pdf')          # Change extension
+p.with_stem('newname')         # Change stem (filename without extension)
+
+# Relative paths
+p1 = Path('/home/user/docs')
+p2 = Path('/home/user/photos/pic.jpg')
+p2.relative_to(p1.parent)      # Path('photos/pic.jpg')
+```
+
+### File System Operations
+
+```python
+p = Path('myfile.txt')
+
+# File/directory checks
+p.exists()           # True if path exists
+p.is_file()          # True if it's a file
+p.is_dir()           # True if it's a directory
+p.is_symlink()       # True if it's a symbolic link
+p.is_absolute()      # True if path is absolute
+
+# File operations
+p.touch()            # Create empty file
+p.unlink()           # Delete file
+p.unlink(missing_ok=True)  # Delete file, no error if missing
+
+# Directory operations
+p.mkdir()                    # Create directory
+p.mkdir(parents=True)        # Create directory and parents
+p.mkdir(exist_ok=True)       # No error if directory exists
+p.rmdir()                    # Remove empty directory
+
+# Reading/writing files
+content = p.read_text()      # Read entire file as string
+content = p.read_bytes()     # Read entire file as bytes
+p.write_text('Hello World')  # Write string to file
+p.write_bytes(b'Hello')      # Write bytes to file
+```
+
+### Directory Listing and Globbing
+
+```python
+p = Path('.')
+
+# List directory contents
+list(p.iterdir())           # All items in directory
+[x for x in p.iterdir() if x.is_file()]  # Files only
+[x for x in p.iterdir() if x.is_dir()]   # Directories only
+
+# Glob patterns
+list(p.glob('*.txt'))       # All .txt files in current directory
+list(p.glob('**/*.py'))     # All .py files recursively
+list(p.rglob('*.py'))       # Same as above (recursive glob)
+
+# Advanced glob patterns
+list(p.glob('file[0-9].txt'))     # file0.txt, file1.txt, etc.
+list(p.glob('file?.txt'))         # file1.txt, filea.txt, etc.
+list(p.glob('[!.]*.txt'))         # .txt files not starting with dot
+```
+
+---
+
+### 2. os.path Module (Traditional)
+
+### Basic Functions
+
+```python
+import os
+import os.path
+
+# Path joining
+path = os.path.join('folder', 'subfolder', 'file.txt')
+path = os.path.join(os.path.expanduser('~'), 'documents')
+
+# Path components
+dirname = os.path.dirname('/path/to/file.txt')    # '/path/to'
+basename = os.path.basename('/path/to/file.txt')  # 'file.txt'
+root, ext = os.path.splitext('file.txt')          # ('file', '.txt')
+drive, path = os.path.splitdrive('C:/path/file.txt')  # ('C:', '/path/file.txt')
+```
+
+### Path Information
+
+```python
+path = '/home/user/file.txt'
+
+# Path properties
+os.path.exists(path)        # True if path exists
+os.path.isfile(path)        # True if it's a file
+os.path.isdir(path)         # True if it's a directory
+os.path.islink(path)        # True if it's a symbolic link
+os.path.isabs(path)         # True if path is absolute
+
+# Path resolution
+os.path.abspath(path)       # Absolute path
+os.path.realpath(path)      # Absolute path, resolves symlinks
+os.path.expanduser('~/file.txt')  # Expands ~ to user home
+os.path.expandvars('$HOME/file.txt')  # Expands environment variables
+```
+
+---
+
+### 3. Method Comparison Table
+
+| Operation | pathlib | os.path | Description |
+|-----------|---------|---------|-------------|
+| **Path Creation** | `Path('file.txt')` | `'file.txt'` | Create path object/string |
+| **Join Paths** | `Path('a') / 'b'` | `os.path.join('a', 'b')` | Combine path components |
+| **Filename** | `p.name` | `os.path.basename(p)` | Get filename |
+| **Directory** | `p.parent` | `os.path.dirname(p)` | Get parent directory |
+| **Extension** | `p.suffix` | `os.path.splitext(p)[1]` | Get file extension |
+| **Stem** | `p.stem` | `os.path.splitext(os.path.basename(p))[0]` | Filename without extension |
+| **Absolute Path** | `p.absolute()` | `os.path.abspath(p)` | Convert to absolute path |
+| **Resolve Symlinks** | `p.resolve()` | `os.path.realpath(p)` | Resolve symbolic links |
+| **Exists** | `p.exists()` | `os.path.exists(p)` | Check if path exists |
+| **Is File** | `p.is_file()` | `os.path.isfile(p)` | Check if it's a file |
+| **Is Directory** | `p.is_dir()` | `os.path.isdir(p)` | Check if it's a directory |
+| **File Size** | `p.stat().st_size` | `os.path.getsize(p)` | Get file size |
+| **Modification Time** | `p.stat().st_mtime` | `os.path.getmtime(p)` | Get modification time |
+
+---
+
+### 4. Advanced Techniques
+
+### Working with Different Operating Systems
+
+```python
+from pathlib import Path, PurePath, PurePosixPath, PureWindowsPath
+
+# Force specific path type
+posix_path = PurePosixPath('home/user/file.txt')
+windows_path = PureWindowsPath('C:\\Users\\user\\file.txt')
+
+# Convert between path types
+p = Path('folder/file.txt')
+windows_str = str(PureWindowsPath(p))  # 'folder\\file.txt'
+posix_str = str(PurePosixPath(p))      # 'folder/file.txt'
+```
+
+### File Permissions and Metadata
+
+```python
+p = Path('file.txt')
+stat = p.stat()
+
+# File metadata
+stat.st_size     # File size in bytes
+stat.st_mtime    # Last modification time
+stat.st_atime    # Last access time
+stat.st_ctime    # Creation time (Windows) or metadata change time (Unix)
+stat.st_mode     # File permissions
+
+# Check permissions
+stat.st_mode & 0o777  # Get permission bits
+p.chmod(0o644)        # Change permissions
+```
+
+### Safe Path Handling
+
+```python
+from pathlib import Path
+
+def safe_path_join(base_dir, user_path):
+    """Safely join paths to prevent directory traversal attacks"""
+    base = Path(base_dir).resolve()
+    target = (base / user_path).resolve()
+    
+    # Ensure target is within base directory
+    if not str(target).startswith(str(base)):
+        raise ValueError("Path traversal detected")
+    
+    return target
+
+# Usage
+try:
+    safe_path = safe_path_join('/safe/directory', '../../../etc/passwd')
+except ValueError:
+    print("Dangerous path detected!")
+```
+
+### Temporary Files and Directories
+
+```python
+import tempfile
+from pathlib import Path
+
+# Temporary file
+with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+    temp_path = Path(f.name)
+    f.write('temporary content')
+
+# Temporary directory
+with tempfile.TemporaryDirectory() as temp_dir:
+    temp_path = Path(temp_dir)
+    # Work with temporary directory
+    (temp_path / 'temp_file.txt').write_text('content')
+```
+
+### Configuration and Data Directories
+
+```python
+from pathlib import Path
+import os
+
+# Cross-platform directory locations
+def get_config_dir():
+    """Get platform-appropriate config directory"""
+    if os.name == 'nt':  # Windows
+        return Path(os.environ.get('APPDATA', Path.home() / 'AppData/Roaming'))
+    else:  # Unix/Linux/macOS
+        return Path(os.environ.get('XDG_CONFIG_HOME', Path.home() / '.config'))
+
+def get_data_dir():
+    """Get platform-appropriate data directory"""
+    if os.name == 'nt':  # Windows
+        return Path(os.environ.get('LOCALAPPDATA', Path.home() / 'AppData/Local'))
+    else:  # Unix/Linux/macOS
+        return Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local/share'))
+
+# Usage
+config_dir = get_config_dir() / 'myapp'
+data_dir = get_data_dir() / 'myapp'
+```
+
+### Error Handling Best Practices
+
+```python
+from pathlib import Path
+import errno
+
+def safe_file_operation(file_path):
+    """Example of robust file handling"""
+    p = Path(file_path)
+    
+    try:
+        # Create parent directories if they don't exist
+        p.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Write to file
+        p.write_text('content')
+        
+    except PermissionError:
+        print(f"Permission denied: {p}")
+    except FileNotFoundError:
+        print(f"Path not found: {p}")
+    except OSError as e:
+        if e.errno == errno.ENOSPC:
+            print("No space left on device")
+        else:
+            print(f"OS error: {e}")
+```
+
+---
+
+### 5. Common Patterns and Recipes
+
+### Find Files Recursively
+
+```python
+from pathlib import Path
+
+def find_files(directory, pattern='*', max_depth=None):
+    """Find files matching pattern with optional depth limit"""
+    directory = Path(directory)
+    
+    if max_depth is None:
+        return list(directory.rglob(pattern))
+    
+    # Limited depth search
+    files = []
+    for i in range(max_depth + 1):
+        pattern_with_depth = '/'.join(['*'] * i + [pattern])
+        files.extend(directory.glob(pattern_with_depth))
+    
+    return files
+
+# Usage
+python_files = find_files('.', '*.py', max_depth=2)
+```
+
+### Backup and Rotate Files
+
+```python
+from pathlib import Path
+import shutil
+from datetime import datetime
+
+def backup_file(file_path, backup_dir=None):
+    """Create timestamped backup of file"""
+    p = Path(file_path)
+    if not p.exists():
+        return None
+    
+    backup_dir = Path(backup_dir) if backup_dir else p.parent / 'backups'
+    backup_dir.mkdir(exist_ok=True)
+    
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    backup_name = f"{p.stem}_{timestamp}{p.suffix}"
+    backup_path = backup_dir / backup_name
+    
+    shutil.copy2(p, backup_path)
+    return backup_path
+```
+
+---
+
+### 6. Performance Tips
+
+1. **Use pathlib for new code** - More readable and less error-prone
+2. **Cache Path objects** - Don't recreate them unnecessarily
+3. **Use `exists()` before operations** - Prevent unnecessary exceptions
+4. **Use `glob()` instead of `os.listdir()`** - More efficient for pattern matching
+5. **Use `rglob()` for recursive searches** - More efficient than manual recursion
+
+### 7. Migration from os.path to pathlib
+
+```python
+# Old way (os.path)
+import os
+filename = os.path.join(os.path.dirname(__file__), 'data', 'file.txt')
+if os.path.exists(filename):
+    with open(filename, 'r') as f:
+        content = f.read()
+
+# New way (pathlib)
+from pathlib import Path
+filename = Path(__file__).parent / 'data' / 'file.txt'
+if filename.exists():
+    content = filename.read_text()
+```
+
+This reference card covers the essential aspects of Python file path handling. The `pathlib` module is generally recommended for new projects due to its cleaner, more intuitive API.
 
 
 ## Virtual Environments
