@@ -6022,6 +6022,905 @@ if __name__ == "__main__":
 #### Tkinter
 
 
+# Python Best Practices 
+
+## Table of Contents
+
+1. [Coding Standards & Style](#coding-standards--style)
+1. [Built-in Functions](#built-in-functions)
+1. [String Methods](#string-methods)
+1. [List Methods](#list-methods)
+1. [Dictionary Methods](#dictionary-methods)
+1. [Set Methods](#set-methods)
+1. [File Operations](#file-operations)
+1. [Error Handling](#error-handling)
+1. [Functions & Classes](#functions--classes)
+1. [Performance Tips](#performance-tips)
+1. [Security Best Practices](#security-best-practices)
+
+## Coding Standards & Style
+
+### PEP 8 Guidelines
+
+```python
+# Good naming conventions
+snake_case_for_variables = "value"
+UPPER_CASE_FOR_CONSTANTS = 42
+class CamelCaseForClasses:
+    pass
+
+# Proper spacing
+def function_name(param1, param2):
+    """Use docstrings for functions."""
+    result = param1 + param2  # Space around operators
+    return result
+
+# Line length: max 79 characters
+# Imports at top, grouped: standard library, third-party, local
+import os
+import sys
+
+import requests
+import numpy as np
+
+from mymodule import myfunction
+```
+
+### Code Organization
+
+```python
+# File structure example
+"""Module docstring explaining purpose."""
+
+# Imports
+import standard_library
+import third_party
+from local import modules
+
+# Constants
+DEFAULT_TIMEOUT = 30
+
+# Classes
+class MyClass:
+    """Class docstring."""
+    pass
+
+# Functions
+def my_function():
+    """Function docstring."""
+    pass
+
+# Main execution
+if __name__ == "__main__":
+    main()
+```
+
+## Built-in Functions
+
+|Function     |Purpose                   |Example                                                  |
+|-------------|--------------------------|---------------------------------------------------------|
+|`abs()`      |Absolute value            |`abs(-5)` → `5`                                          |
+|`all()`      |True if all elements true |`all([True, 1, "text"])` → `True`                        |
+|`any()`      |True if any element true  |`any([False, 0, "text"])` → `True`                       |
+|`enumerate()`|Add index to iterable     |`list(enumerate(['a', 'b']))` → `[(0, 'a'), (1, 'b')]`   |
+|`filter()`   |Filter elements           |`list(filter(lambda x: x > 0, [-1, 0, 1, 2]))` → `[1, 2]`|
+|`len()`      |Length of object          |`len("hello")` → `5`                                     |
+|`map()`      |Apply function to iterable|`list(map(str.upper, ['a', 'b']))` → `['A', 'B']`        |
+|`max()`      |Maximum value             |`max([1, 2, 3])` → `3`                                   |
+|`min()`      |Minimum value             |`min([1, 2, 3])` → `1`                                   |
+|`range()`    |Generate number sequence  |`list(range(3))` → `[0, 1, 2]`                           |
+|`reversed()` |Reverse iterator          |`list(reversed([1, 2, 3]))` → `[3, 2, 1]`                |
+|`sorted()`   |Sort iterable             |`sorted([3, 1, 2])` → `[1, 2, 3]`                        |
+|`sum()`      |Sum of numbers            |`sum([1, 2, 3])` → `6`                                   |
+|`zip()`      |Combine iterables         |`list(zip([1, 2], ['a', 'b']))` → `[(1, 'a'), (2, 'b')]` |
+
+### Advanced Built-ins
+
+```python
+# isinstance() - type checking (preferred over type())
+isinstance(5, int)  # True
+isinstance("hello", (str, int))  # True
+
+# hasattr() - check attribute existence
+hasattr(obj, 'method_name')
+
+# getattr() - get attribute with default
+value = getattr(obj, 'attr', default_value)
+
+# setattr() - set attribute dynamically
+setattr(obj, 'new_attr', value)
+```
+
+## String Methods
+
+|Method        |Purpose                 |Example                                       |
+|--------------|------------------------|----------------------------------------------|
+|`capitalize()`|First char uppercase    |`"hello".capitalize()` → `"Hello"`            |
+|`count()`     |Count substring         |`"hello world".count("l")` → `3`              |
+|`endswith()`  |Check suffix            |`"file.txt".endswith(".txt")` → `True`        |
+|`find()`      |Find substring index    |`"hello".find("ll")` → `2`                    |
+|`format()`    |String formatting       |`"Hello {}".format("world")` → `"Hello world"`|
+|`isdigit()`   |Check if digits only    |`"123".isdigit()` → `True`                    |
+|`join()`      |Join list with separator|`", ".join(["a", "b"])` → `"a, b"`            |
+|`lower()`     |Convert to lowercase    |`"HELLO".lower()` → `"hello"`                 |
+|`replace()`   |Replace substring       |`"hello".replace("l", "x")` → `"hexxo"`       |
+|`split()`     |Split into list         |`"a,b,c".split(",")` → `["a", "b", "c"]`      |
+|`startswith()`|Check prefix            |`"hello".startswith("he")` → `True`           |
+|`strip()`     |Remove whitespace       |`" hello ".strip()` → `"hello"`               |
+|`upper()`     |Convert to uppercase    |`"hello".upper()` → `"HELLO"`                 |
+
+### String Formatting Best Practices
+
+```python
+# f-strings (Python 3.6+) - PREFERRED
+name = "Alice"
+age = 30
+message = f"Hello {name}, you are {age} years old"
+
+# Format with expressions
+price = 29.99
+formatted = f"Price: ${price:.2f}"  # Price: $29.99
+
+# Multiline f-strings
+text = f"""
+Name: {name}
+Age: {age}
+Status: {'Adult' if age >= 18 else 'Minor'}
+"""
+```
+
+## List Methods
+
+|Method     |Purpose                |Example                                 |
+|-----------|-----------------------|----------------------------------------|
+|`append()` |Add single element     |`lst.append(4)`                         |
+|`clear()`  |Remove all elements    |`lst.clear()`                           |
+|`copy()`   |Shallow copy           |`new_lst = lst.copy()`                  |
+|`count()`  |Count occurrences      |`[1,2,2,3].count(2)` → `2`              |
+|`extend()` |Add multiple elements  |`lst.extend([4, 5, 6])`                 |
+|`index()`  |Find first index       |`[1,2,3].index(2)` → `1`                |
+|`insert()` |Insert at position     |`lst.insert(0, "first")`                |
+|`pop()`    |Remove and return      |`lst.pop()` or `lst.pop(0)`             |
+|`remove()` |Remove first occurrence|`lst.remove("value")`                   |
+|`reverse()`|Reverse in place       |`lst.reverse()`                         |
+|`sort()`   |Sort in place          |`lst.sort()` or `lst.sort(reverse=True)`|
+
+### List Comprehensions & Techniques
+
+```python
+# List comprehensions (preferred over loops)
+squares = [x**2 for x in range(10)]
+evens = [x for x in range(20) if x % 2 == 0]
+matrix = [[i*j for j in range(3)] for i in range(3)]
+
+# Unpacking
+first, *middle, last = [1, 2, 3, 4, 5]
+# first=1, middle=[2,3,4], last=5
+
+# Slicing
+lst[start:stop:step]
+lst[::-1]  # Reverse
+lst[::2]   # Every second element
+```
+
+## Dictionary Methods
+
+|Method        |Purpose                 |Example                     |
+|--------------|------------------------|----------------------------|
+|`clear()`     |Remove all items        |`d.clear()`                 |
+|`copy()`      |Shallow copy            |`new_d = d.copy()`          |
+|`get()`       |Get value with default  |`d.get('key', default)`     |
+|`items()`     |Key-value pairs         |`list(d.items())`           |
+|`keys()`      |All keys                |`list(d.keys())`            |
+|`pop()`       |Remove and return value |`d.pop('key', default)`     |
+|`popitem()`   |Remove last item        |`d.popitem()`               |
+|`setdefault()`|Get or set default      |`d.setdefault('key', [])`   |
+|`update()`    |Update with another dict|`d.update({'new': 'value'})`|
+|`values()`    |All values              |`list(d.values())`          |
+
+### Dictionary Techniques
+
+```python
+# Dictionary comprehensions
+squares = {x: x**2 for x in range(5)}
+filtered = {k: v for k, v in data.items() if condition}
+
+# Merging dictionaries (Python 3.9+)
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'c': 3, 'd': 4}
+merged = dict1 | dict2
+
+# Safe key access
+value = data.get('key', 'default_value')
+
+# Default dictionaries
+from collections import defaultdict
+dd = defaultdict(list)
+dd['key'].append('value')  # No KeyError
+```
+
+## Set Methods
+
+|Method          |Purpose              |Example                           |
+|----------------|---------------------|----------------------------------|
+|`add()`         |Add element          |`s.add(4)`                        |
+|`clear()`       |Remove all           |`s.clear()`                       |
+|`copy()`        |Shallow copy         |`new_s = s.copy()`                |
+|`difference()`  |Set difference       |`s1.difference(s2)` or `s1 - s2`  |
+|`discard()`     |Remove (no error)    |`s.discard(4)`                    |
+|`intersection()`|Common elements      |`s1.intersection(s2)` or `s1 & s2`|
+|`issubset()`    |Check subset         |`s1.issubset(s2)` or `s1 <= s2`   |
+|`issuperset()`  |Check superset       |`s1.issuperset(s2)` or `s1 >= s2` |
+|`pop()`         |Remove arbitrary     |`s.pop()`                         |
+|`remove()`      |Remove (raises error)|`s.remove(4)`                     |
+|`union()`       |Combine sets         |`s1.union(s2)` or `s1             |
+|`update()`      |Add multiple         |`s.update([4, 5, 6])`             |
+
+## File Operations
+
+### Context Managers (Preferred)
+
+```python
+# Reading files
+with open('file.txt', 'r', encoding='utf-8') as f:
+    content = f.read()
+    # File automatically closed
+
+# Writing files
+with open('output.txt', 'w', encoding='utf-8') as f:
+    f.write("Hello World\n")
+
+# JSON operations
+import json
+with open('data.json', 'r') as f:
+    data = json.load(f)
+
+with open('data.json', 'w') as f:
+    json.dump(data, f, indent=2)
+
+# CSV operations
+import csv
+with open('data.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(row)
+```
+
+### File Modes
+
+|Mode |Description        |
+|-----|-------------------|
+|`'r'`|Read (default)     |
+|`'w'`|Write (overwrites) |
+|`'a'`|Append             |
+|`'x'`|Exclusive creation |
+|`'b'`|Binary mode        |
+|`'t'`|Text mode (default)|
+|`'+'`|Read and write     |
+
+## Error Handling
+
+### Exception Hierarchy
+
+```python
+# Specific exceptions first, general last
+try:
+    result = risky_operation()
+except FileNotFoundError:
+    print("File not found")
+except ValueError as e:
+    print(f"Invalid value: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
+else:
+    print("Success!")
+finally:
+    print("Always executed")
+```
+
+### Common Exception Types
+
+|Exception          |When to Use            |
+|-------------------|-----------------------|
+|`ValueError`       |Wrong value type/range |
+|`TypeError`        |Wrong type             |
+|`KeyError`         |Dictionary key missing |
+|`IndexError`       |List index out of range|
+|`FileNotFoundError`|File doesn’t exist     |
+|`AttributeError`   |Object lacks attribute |
+|`ZeroDivisionError`|Division by zero       |
+
+### Custom Exceptions
+
+```python
+class CustomError(Exception):
+    """Custom exception for specific use case."""
+    def __init__(self, message, error_code=None):
+        super().__init__(message)
+        self.error_code = error_code
+
+# Usage
+raise CustomError("Something went wrong", error_code=404)
+```
+
+## Functions & Classes
+
+### Function Best Practices
+
+```python
+def calculate_area(length: float, width: float) -> float:
+    """
+    Calculate rectangle area.
+    
+    Args:
+        length: Rectangle length in meters
+        width: Rectangle width in meters
+    
+    Returns:
+        Area in square meters
+    
+    Raises:
+        ValueError: If length or width is negative
+    """
+    if length < 0 or width < 0:
+        raise ValueError("Dimensions must be positive")
+    
+    return length * width
+
+# Default arguments
+def greet(name: str, greeting: str = "Hello") -> str:
+    return f"{greeting}, {name}!"
+
+# Variable arguments
+def sum_all(*args: float) -> float:
+    return sum(args)
+
+def process_data(**kwargs) -> dict:
+    return {k: v.upper() if isinstance(v, str) else v 
+            for k, v in kwargs.items()}
+```
+
+### Class Best Practices
+
+```python
+from typing import Optional, List
+
+class BankAccount:
+    """Represents a bank account."""
+    
+    def __init__(self, account_number: str, initial_balance: float = 0.0):
+        self.account_number = account_number
+        self._balance = initial_balance  # Protected attribute
+        self._transactions: List[str] = []
+    
+    @property
+    def balance(self) -> float:
+        """Get current balance."""
+        return self._balance
+    
+    @balance.setter
+    def balance(self, amount: float) -> None:
+        """Set balance with validation."""
+        if amount < 0:
+            raise ValueError("Balance cannot be negative")
+        self._balance = amount
+    
+    def deposit(self, amount: float) -> None:
+        """Deposit money to account."""
+        if amount <= 0:
+            raise ValueError("Deposit amount must be positive")
+        
+        self._balance += amount
+        self._transactions.append(f"Deposit: +${amount:.2f}")
+    
+    def __str__(self) -> str:
+        return f"Account {self.account_number}: ${self._balance:.2f}"
+    
+    def __repr__(self) -> str:
+        return f"BankAccount('{self.account_number}', {self._balance})"
+```
+
+### Decorators
+
+```python
+import functools
+import time
+
+def timer(func):
+    """Time function execution."""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end-start:.4f} seconds")
+        return result
+    return wrapper
+
+@timer
+def slow_function():
+    time.sleep(1)
+    return "Done"
+
+# Property decorator
+class Circle:
+    def __init__(self, radius):
+        self._radius = radius
+    
+    @property
+    def radius(self):
+        return self._radius
+    
+    @radius.setter
+    def radius(self, value):
+        if value < 0:
+            raise ValueError("Radius must be positive")
+        self._radius = value
+    
+    @property
+    def area(self):
+        return 3.14159 * self._radius ** 2
+```
+
+## Performance Tips
+
+### List vs Generator Expressions
+
+```python
+# Memory efficient - use generators for large datasets
+numbers_gen = (x**2 for x in range(1000000))  # Generator
+numbers_list = [x**2 for x in range(1000000)]  # List (uses more memory)
+
+# Use generators when you don't need all values at once
+def fibonacci_gen():
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+# Take first 10 fibonacci numbers
+fib = fibonacci_gen()
+first_10 = [next(fib) for _ in range(10)]
+```
+
+### Efficient Operations
+
+```python
+# String concatenation - use join() for multiple strings
+# Bad
+result = ""
+for item in items:
+    result += str(item) + ", "
+
+# Good
+result = ", ".join(str(item) for item in items)
+
+# Use sets for membership testing
+# Bad - O(n)
+if item in large_list:
+    pass
+
+# Good - O(1)
+large_set = set(large_list)
+if item in large_set:
+    pass
+
+# Use dict.get() instead of checking keys
+# Bad
+if key in dictionary:
+    value = dictionary[key]
+else:
+    value = default
+
+# Good
+value = dictionary.get(key, default)
+```
+
+### Collections Module
+
+```python
+from collections import defaultdict, Counter, namedtuple, deque
+
+# defaultdict - no KeyError
+dd = defaultdict(int)
+dd['missing_key'] += 1  # No error, starts at 0
+
+# Counter - count items
+counter = Counter(['a', 'b', 'a', 'c', 'b', 'a'])
+# Counter({'a': 3, 'b': 2, 'c': 1})
+
+# namedtuple - lightweight classes
+Point = namedtuple('Point', ['x', 'y'])
+p = Point(1, 2)
+print(p.x, p.y)  # 1 2
+
+# deque - efficient queue operations
+from collections import deque
+queue = deque([1, 2, 3])
+queue.appendleft(0)  # [0, 1, 2, 3]
+queue.pop()  # 3, queue is now [0, 1, 2]
+```
+
+## Security Best Practices
+
+### Input Validation
+
+```python
+def validate_email(email: str) -> bool:
+    """Basic email validation."""
+    import re
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return bool(re.match(pattern, email))
+
+def sanitize_filename(filename: str) -> str:
+    """Remove dangerous characters from filename."""
+    import re
+    # Remove dangerous characters
+    safe = re.sub(r'[<>:"/\\|?*]', '', filename)
+    # Limit length
+    return safe[:255]
+
+# Never use eval() with user input
+# Bad
+user_input = "1 + 1"
+result = eval(user_input)  # DANGEROUS!
+
+# Good - use ast.literal_eval for safe evaluation
+import ast
+try:
+    result = ast.literal_eval("{'key': 'value'}")
+except (ValueError, SyntaxError):
+    print("Invalid input")
+```
+
+### Secrets and Environment Variables
+
+```python
+import os
+from pathlib import Path
+
+# Use environment variables for secrets
+api_key = os.environ.get('API_KEY')
+if not api_key:
+    raise ValueError("API_KEY environment variable not set")
+
+# Use pathlib for file paths
+config_path = Path.home() / '.config' / 'myapp' / 'config.json'
+
+# Generate secure random values
+import secrets
+password = secrets.token_urlsafe(32)
+random_int = secrets.randbelow(100)
+```
+
+## Common Patterns & Idioms
+
+### Context Managers
+
+```python
+class DatabaseConnection:
+    """Custom context manager example."""
+    
+    def __enter__(self):
+        self.connection = connect_to_db()
+        return self.connection
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.connection.close()
+
+# Usage
+with DatabaseConnection() as db:
+    db.execute("SELECT * FROM users")
+```
+
+### Itertools for Advanced Iteration
+
+```python
+import itertools
+
+# Chain multiple iterables
+combined = itertools.chain([1, 2], [3, 4], [5, 6])
+# [1, 2, 3, 4, 5, 6]
+
+# Group consecutive elements
+data = [1, 1, 2, 2, 2, 3, 1, 1]
+grouped = itertools.groupby(data)
+for key, group in grouped:
+    print(f"{key}: {list(group)}")
+
+# Combinations and permutations
+combinations = list(itertools.combinations([1, 2, 3], 2))
+# [(1, 2), (1, 3), (2, 3)]
+
+permutations = list(itertools.permutations([1, 2, 3], 2))
+# [(1, 2), (1, 3), (2, 1), (2, 3), (3, 1), (3, 2)]
+```
+
+### Type Hints
+
+```python
+from typing import List, Dict, Optional, Union, Callable, Any
+
+def process_items(
+    items: List[str], 
+    processor: Callable[[str], str],
+    config: Optional[Dict[str, Any]] = None
+) -> List[str]:
+    """Process list of items with given function."""
+    if config is None:
+        config = {}
+    
+    return [processor(item) for item in items]
+
+# Union types
+def handle_id(user_id: Union[int, str]) -> str:
+    return str(user_id)
+
+# Generic types
+from typing import TypeVar, Generic
+
+T = TypeVar('T')
+
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self._items: List[T] = []
+    
+    def push(self, item: T) -> None:
+        self._items.append(item)
+    
+    def pop(self) -> T:
+        return self._items.pop()
+```
+
+## Testing Best Practices
+
+### Unit Testing
+
+```python
+import unittest
+from unittest.mock import patch, Mock
+
+class TestCalculator(unittest.TestCase):
+    
+    def setUp(self):
+        """Run before each test."""
+        self.calc = Calculator()
+    
+    def test_addition(self):
+        """Test addition operation."""
+        result = self.calc.add(2, 3)
+        self.assertEqual(result, 5)
+    
+    def test_division_by_zero(self):
+        """Test division by zero raises exception."""
+        with self.assertRaises(ZeroDivisionError):
+            self.calc.divide(10, 0)
+    
+    @patch('requests.get')
+    def test_api_call(self, mock_get):
+        """Test API call with mocking."""
+        mock_response = Mock()
+        mock_response.json.return_value = {'status': 'ok'}
+        mock_get.return_value = mock_response
+        
+        result = self.calc.fetch_data('http://api.example.com')
+        self.assertEqual(result['status'], 'ok')
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+## Memory Management
+
+### Weak References
+
+```python
+import weakref
+
+class Parent:
+    def __init__(self):
+        self._children = set()
+    
+    def add_child(self, child):
+        self._children.add(weakref.ref(child))
+
+# Use slots for memory efficiency
+class Point:
+    __slots__ = ['x', 'y']  # Reduces memory usage
+    
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+```
+
+## Logging Best Practices
+
+```python
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+def process_data(data):
+    """Example with proper logging."""
+    logger.info("Starting data processing")
+    
+    try:
+        result = complex_operation(data)
+        logger.debug(f"Processed {len(data)} items")
+        return result
+    except Exception as e:
+        logger.error(f"Processing failed: {e}", exc_info=True)
+        raise
+
+# Log levels: DEBUG < INFO < WARNING < ERROR < CRITICAL
+```
+
+## Code Quality Tools
+
+### Docstring Standards
+
+```python
+def complex_function(param1: str, param2: int = 10) -> tuple:
+    """
+    One line summary of function purpose.
+    
+    Longer description explaining what the function does,
+    any important details about implementation or usage.
+    
+    Args:
+        param1: Description of first parameter
+        param2: Description of second parameter (default: 10)
+    
+    Returns:
+        Tuple containing (result1, result2) where:
+        - result1 (str): Description of first return value
+        - result2 (int): Description of second return value
+    
+    Raises:
+        ValueError: If param1 is empty
+        TypeError: If param2 is not an integer
+    
+    Example:
+        >>> result = complex_function("test", 5)
+        >>> print(result)
+        ('processed_test', 15)
+    """
+    if not param1:
+        raise ValueError("param1 cannot be empty")
+    
+    return f"processed_{param1}", param2 + 5
+```
+
+### Code Formatting Tools
+
+```bash
+# Black - code formatter
+pip install black
+black your_file.py
+
+# isort - import sorting
+pip install isort
+isort your_file.py
+
+# flake8 - style guide enforcement
+pip install flake8
+flake8 your_file.py
+
+# mypy - type checking
+pip install mypy
+mypy your_file.py
+```
+
+## Quick Reference: Common Patterns
+
+### Singleton Pattern
+
+```python
+class Singleton:
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+```
+
+### Factory Pattern
+
+```python
+def create_animal(animal_type: str):
+    """Factory function for animals."""
+    animals = {
+        'dog': Dog,
+        'cat': Cat,
+        'bird': Bird
+    }
+    
+    animal_class = animals.get(animal_type.lower())
+    if not animal_class:
+        raise ValueError(f"Unknown animal type: {animal_type}")
+    
+    return animal_class()
+```
+
+### Configuration Management
+
+```python
+import configparser
+from dataclasses import dataclass
+from pathlib import Path
+
+@dataclass
+class Config:
+    """Application configuration."""
+    database_url: str
+    api_timeout: int = 30
+    debug_mode: bool = False
+    
+    @classmethod
+    def from_file(cls, config_path: Path):
+        """Load config from file."""
+        config = configparser.ConfigParser()
+        config.read(config_path)
+        
+        return cls(
+            database_url=config['database']['url'],
+            api_timeout=config.getint('api', 'timeout', fallback=30),
+            debug_mode=config.getboolean('app', 'debug', fallback=False)
+        )
+```
+
+## Quick Tips Summary
+
+### Do’s ✅
+
+- Use f-strings for string formatting
+- Use list/dict comprehensions when readable
+- Handle exceptions specifically
+- Use context managers for resources
+- Write docstrings for public functions
+- Use type hints
+- Keep functions small and focused
+- Use meaningful variable names
+- Follow PEP 8 style guide
+- Use `is` for None comparisons: `if value is None:`
+
+### Don’ts ❌
+
+- Don’t use `eval()` with user input
+- Don’t ignore exceptions with bare `except:`
+- Don’t use mutable default arguments
+- Don’t compare with `==` for None, True, False
+- Don’t use `from module import *`
+- Don’t mix tabs and spaces
+- Don’t write functions longer than ~20 lines
+- Don’t use global variables extensively
+- Don’t forget to close files (use `with`)
+- Don’t use `+` for string concatenation in loops
+
+### Performance Quick Wins
+
+1. Use `set()` for membership testing
+1. Use `dict.get()` instead of checking keys
+1. Use generators for large datasets
+1. Cache expensive computations with `@lru_cache`
+1. Use `join()` for string concatenation
+1. Prefer `collections.deque` for queue operations
+1. Use `__slots__` for memory-critical classes
+
+This reference card covers the most essential Python best practices, methods, and patterns you’ll use in day-to-day development. Keep it handy for quick lookups!
+
+
 ## References
 - Python Software Foundation: [https://www.python.org/](https://www.python.org/)
 - Python Tutorial: [https://docs.python.org/3/tutorial/index.html](https://docs.python.org/3/tutorial/index.html)
