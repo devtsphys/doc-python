@@ -6009,6 +6009,370 @@ if __name__ == "__main__":
     parser.add_argument("--timeout", type=int, metavar="SECONDS")
     ```
 
+### Datetime
+
+#### Import Statements
+
+```python
+from datetime import datetime, date, time, timedelta, timezone
+import datetime as dt  # Alternative import style
+```
+
+#### `datetime.datetime` - Date and Time
+
+Represents a specific moment in time with year, month, day, hour, minute, second, and microsecond.
+
+#### `datetime.date` - Date Only
+
+Represents just a date (year, month, day) without time information.
+
+#### `datetime.time` - Time Only
+
+Represents time of day (hour, minute, second, microsecond) without date.
+
+#### `datetime.timedelta` - Duration
+
+Represents a duration or difference between two dates/times.
+
+#### `datetime.timezone` - Timezone Info
+
+Represents timezone information for aware datetime objects.
+
+#### Current Date/Time
+
+```python
+# Current datetime
+now = datetime.now()                    # Local time
+utc_now = datetime.now(timezone.utc)    # UTC time
+today = date.today()                    # Today's date
+```
+
+#### Specific Date/Time
+
+```python
+# Create specific datetime
+dt = datetime(2024, 12, 25, 14, 30, 45, 123456)
+specific_date = date(2024, 12, 25)
+specific_time = time(14, 30, 45)
+
+# With timezone
+dt_tz = datetime(2024, 12, 25, 14, 30, tzinfo=timezone.utc)
+```
+
+#### From String (Parsing)
+
+```python
+# Parse from string
+dt = datetime.strptime("2024-12-25 14:30:45", "%Y-%m-%d %H:%M:%S")
+dt = datetime.fromisoformat("2024-12-25T14:30:45")
+dt = datetime.fromisoformat("2024-12-25T14:30:45+00:00")  # With timezone
+```
+
+#### From Timestamp
+
+```python
+# From Unix timestamp
+dt = datetime.fromtimestamp(1703516445)
+dt_utc = datetime.fromtimestamp(1703516445, tz=timezone.utc)
+```
+
+-----
+
+#### DateTime Methods Reference Table
+
+|Method                   |Description                      |Example                                        |Returns         |
+|-------------------------|---------------------------------|-----------------------------------------------|----------------|
+|**Creation & Conversion**|                                 |                                               |                |
+|`now()`                  |Current local datetime           |`datetime.now()`                               |datetime        |
+|`utcnow()`               |Current UTC datetime (deprecated)|`datetime.utcnow()`                            |datetime        |
+|`today()`                |Current date                     |`date.today()`                                 |date            |
+|`fromtimestamp(ts)`      |From Unix timestamp              |`datetime.fromtimestamp(1703516445)`           |datetime        |
+|`fromisoformat(s)`       |From ISO format string           |`datetime.fromisoformat("2024-12-25T14:30:45")`|datetime        |
+|`strptime(s, fmt)`       |Parse string with format         |`datetime.strptime("2024/12/25", "%Y/%m/%d")`  |datetime        |
+|**Formatting & Output**  |                                 |                                               |                |
+|`strftime(fmt)`          |Format to string                 |`dt.strftime("%Y-%m-%d %H:%M:%S")`             |str             |
+|`isoformat()`            |ISO format string                |`dt.isoformat()`                               |str             |
+|`__str__()`              |String representation            |`str(dt)`                                      |str             |
+|`ctime()`                |C-style time string              |`dt.ctime()`                                   |str             |
+|**Conversion**           |                                 |                                               |                |
+|`date()`                 |Extract date part                |`dt.date()`                                    |date            |
+|`time()`                 |Extract time part                |`dt.time()`                                    |time            |
+|`timestamp()`            |Unix timestamp                   |`dt.timestamp()`                               |float           |
+|`toordinal()`            |Days since year 1                |`dt.toordinal()`                               |int             |
+|**Timezone Operations**  |                                 |                                               |                |
+|`replace(tzinfo=tz)`     |Add/change timezone              |`dt.replace(tzinfo=timezone.utc)`              |datetime        |
+|`astimezone(tz)`         |Convert to timezone              |`dt.astimezone(timezone.utc)`                  |datetime        |
+|`utctimetuple()`         |UTC time tuple                   |`dt.utctimetuple()`                            |time.struct_time|
+|**Date Arithmetic**      |                                 |                                               |                |
+|`replace(**kwargs)`      |Replace components               |`dt.replace(year=2025, hour=10)`               |datetime        |
+|**Properties**           |                                 |                                               |                |
+|`year`                   |Year component                   |`dt.year`                                      |int             |
+|`month`                  |Month component (1-12)           |`dt.month`                                     |int             |
+|`day`                    |Day component                    |`dt.day`                                       |int             |
+|`hour`                   |Hour component (0-23)            |`dt.hour`                                      |int             |
+|`minute`                 |Minute component (0-59)          |`dt.minute`                                    |int             |
+|`second`                 |Second component (0-59)          |`dt.second`                                    |int             |
+|`microsecond`            |Microsecond component            |`dt.microsecond`                               |int             |
+|`weekday()`              |Day of week (0=Monday)           |`dt.weekday()`                                 |int             |
+|`isoweekday()`           |Day of week (1=Monday)           |`dt.isoweekday()`                              |int             |
+|`isocalendar()`          |ISO year, week, day              |`dt.isocalendar()`                             |tuple           |
+
+-----
+
+#### TimeDelta Operations
+
+#### Creating TimeDelta
+
+```python
+# Various ways to create timedelta
+td = timedelta(days=7, hours=3, minutes=30, seconds=45)
+td = timedelta(weeks=2)
+td = timedelta(milliseconds=500, microseconds=123)
+
+# From datetime arithmetic
+dt1 = datetime(2024, 12, 25)
+dt2 = datetime(2024, 12, 31)
+difference = dt2 - dt1  # Returns timedelta
+```
+
+#### TimeDelta Methods & Properties
+
+```python
+td = timedelta(days=7, hours=3, minutes=30)
+
+# Properties
+print(td.days)          # 7
+print(td.seconds)       # 12600 (hours and minutes converted to seconds)
+print(td.microseconds)  # 0
+print(td.total_seconds())  # 617400.0 (total duration in seconds)
+
+# Arithmetic
+new_date = datetime.now() + td  # Add timedelta to datetime
+doubled = td * 2                # Multiply timedelta
+half = td / 2                   # Divide timedelta
+```
+
+-----
+
+#### String Formatting Codes
+
+#### Common Format Codes
+
+|Code|Meaning            |Example |
+|----|-------------------|--------|
+|`%Y`|4-digit year       |2024    |
+|`%y`|2-digit year       |24      |
+|`%m`|Month (01-12)      |12      |
+|`%B`|Full month name    |December|
+|`%b`|Abbreviated month  |Dec     |
+|`%d`|Day (01-31)        |25      |
+|`%A`|Full weekday name  |Monday  |
+|`%a`|Abbreviated weekday|Mon     |
+|`%H`|Hour (00-23)       |14      |
+|`%I`|Hour (01-12)       |02      |
+|`%M`|Minute (00-59)     |30      |
+|`%S`|Second (00-59)     |45      |
+|`%f`|Microsecond        |123456  |
+|`%p`|AM/PM              |PM      |
+|`%z`|UTC offset         |+0000   |
+|`%Z`|Timezone name      |UTC     |
+
+#### Formatting Examples
+
+```python
+dt = datetime(2024, 12, 25, 14, 30, 45)
+
+# Common formats
+print(dt.strftime("%Y-%m-%d"))           # 2024-12-25
+print(dt.strftime("%B %d, %Y"))          # December 25, 2024
+print(dt.strftime("%A, %b %d"))          # Wednesday, Dec 25
+print(dt.strftime("%I:%M %p"))           # 02:30 PM
+print(dt.strftime("%Y-%m-%d %H:%M:%S"))  # 2024-12-25 14:30:45
+```
+
+-----
+
+#### Timezone Handling
+
+#### Working with Timezones
+
+```python
+from datetime import timezone, timedelta
+
+# UTC timezone
+utc = timezone.utc
+dt_utc = datetime.now(utc)
+
+# Custom timezone offset
+est = timezone(timedelta(hours=-5))  # EST (UTC-5)
+dt_est = datetime.now(est)
+
+# Convert between timezones
+dt_local = datetime.now()
+dt_utc = dt_local.replace(tzinfo=timezone.utc)  # Assume local is UTC
+dt_est = dt_utc.astimezone(est)  # Convert to EST
+```
+
+#### Third-party Timezone Support
+
+```python
+# Using pytz (install: pip install pytz)
+import pytz
+
+# Get timezone
+eastern = pytz.timezone('US/Eastern')
+pacific = pytz.timezone('US/Pacific')
+
+# Create timezone-aware datetime
+dt_eastern = eastern.localize(datetime(2024, 12, 25, 14, 30))
+dt_pacific = dt_eastern.astimezone(pacific)
+```
+
+-----
+
+#### Common Techniques & Patterns
+
+#### Date Arithmetic
+
+```python
+from datetime import datetime, timedelta
+
+# Add/subtract time
+now = datetime.now()
+tomorrow = now + timedelta(days=1)
+last_week = now - timedelta(weeks=1)
+in_two_hours = now + timedelta(hours=2)
+
+# First/last day of month
+first_day = now.replace(day=1)
+if now.month == 12:
+    next_month = now.replace(year=now.year+1, month=1, day=1)
+else:
+    next_month = now.replace(month=now.month+1, day=1)
+last_day = next_month - timedelta(days=1)
+```
+
+#### Date Ranges & Iterations
+
+```python
+# Generate date range
+start_date = date(2024, 1, 1)
+end_date = date(2024, 1, 7)
+current = start_date
+
+while current <= end_date:
+    print(current)
+    current += timedelta(days=1)
+
+# Or using a function
+def date_range(start, end, step=timedelta(days=1)):
+    current = start
+    while current < end:
+        yield current
+        current += step
+
+# Usage
+for dt in date_range(datetime(2024, 1, 1), datetime(2024, 1, 8)):
+    print(dt.strftime("%Y-%m-%d"))
+```
+
+#### Age Calculation
+
+```python
+def calculate_age(birth_date, reference_date=None):
+    if reference_date is None:
+        reference_date = date.today()
+    
+    age = reference_date.year - birth_date.year
+    if (reference_date.month, reference_date.day) < (birth_date.month, birth_date.day):
+        age -= 1
+    return age
+
+# Usage
+birth = date(1990, 5, 15)
+age = calculate_age(birth)
+```
+
+#### Working with Business Days
+
+```python
+def is_business_day(dt):
+    """Check if date is a business day (Monday=0 to Friday=4)"""
+    return dt.weekday() < 5
+
+def add_business_days(start_date, days):
+    """Add business days to a date"""
+    current = start_date
+    while days > 0:
+        current += timedelta(days=1)
+        if is_business_day(current):
+            days -= 1
+    return current
+
+# Usage
+start = date(2024, 12, 20)  # Friday
+result = add_business_days(start, 3)  # Next Wednesday
+```
+
+#### Time Measurement
+
+```python
+import time
+from datetime import datetime
+
+# Measure execution time
+start_time = datetime.now()
+# ... some operation ...
+end_time = datetime.now()
+duration = end_time - start_time
+print(f"Operation took: {duration.total_seconds():.2f} seconds")
+
+# Using timestamp for precision
+start_timestamp = time.time()
+# ... some operation ...
+duration_seconds = time.time() - start_timestamp
+```
+
+#### Date Validation
+
+```python
+def is_valid_date(year, month, day):
+    """Check if date is valid"""
+    try:
+        date(year, month, day)
+        return True
+    except ValueError:
+        return False
+
+def parse_date_safe(date_string, format_string):
+    """Safely parse date string"""
+    try:
+        return datetime.strptime(date_string, format_string)
+    except ValueError as e:
+        print(f"Invalid date format: {e}")
+        return None
+```
+
+-----
+
+#### Performance Tips
+
+1. **Use `date` objects when you don’t need time information** - they’re more memory efficient
+1. **Cache timezone objects** instead of creating them repeatedly
+1. **Use `fromisoformat()` for ISO strings** - it’s faster than `strptime()`
+1. **Avoid `utcnow()`** - it’s deprecated, use `datetime.now(timezone.utc)` instead
+1. **For high-frequency operations**, consider using timestamps and converting only when needed
+
+-----
+
+#### Common Gotchas
+
+1. **Naive vs Aware DateTimes**: Always be explicit about timezone handling
+1. **Month/Day Boundaries**: Be careful with operations that might exceed month boundaries
+1. **Leap Years**: February 29th exists only in leap years
+1. **DST Transitions**: Timezone-aware arithmetic handles DST automatically
+1. **String Parsing**: Always validate input when parsing user-provided date strings
+
 
 ### Database Connection
 
